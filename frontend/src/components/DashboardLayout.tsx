@@ -5,7 +5,6 @@ import { getUnreadCount } from '../lib/api'
 import { LayoutDashboard, Users, CalendarClock, Receipt, Bell, MessageSquareText, FileText, LogOut } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
-const STAFF_ROLES = ['admin', 'doctor', 'nurse', 'receptionist']
 
 const NAV_ITEMS: { to: string; label: string; icon: LucideIcon; roles: string[] }[] = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'doctor', 'nurse', 'receptionist', 'patient'] },
