@@ -18,3 +18,7 @@ export function clearTokens() {
 export function isAuthenticated() {
   return !!getAccessToken()
 }
+
+export function getRefreshToken() {
+  return localStorage.getItem(REFRESH_KEY)
+}

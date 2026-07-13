@@ -11,6 +11,8 @@ media/
 
 # Env files
 .env
+.env.*
+!.env.example
 .env.local
 
 # Node / frontend

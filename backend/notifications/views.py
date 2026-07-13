@@ -1,4 +1,5 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, generics
+from .models import Notification, DeviceToken
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -25,3 +26,18 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     def unread_count(self, request):
         count = self.get_queryset().filter(is_read=False).count()
         return Response({'unread_count': count})
+
+
+class RegisterDeviceTokenView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        token = request.data.get('token')
+        platform = request.data.get('platform')
+        if not token or not platform:
+            return Response({'detail': 'token and platform required.'}, status=400)
+        DeviceToken.objects.update_or_create(
+            token=token,
+            defaults={'user': request.user, 'platform': platform},
+        )
+        return Response({'status': 'registered'})
