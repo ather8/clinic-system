@@ -1,7 +1,8 @@
 FROM python:3.12-slim
 
-# System dependencies: tesseract for OCR, libpq/gcc for psycopg2
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Tesseract is needed system-wide for the OCR feature — this is why we can't
+# use a plain pip install alone; pytesseract just wraps the actual binary
+RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     libpq-dev \
     gcc \
@@ -14,10 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+RUN python manage.py collectstatic --noinput --skip-checks || true
 
 EXPOSE 8000
 
-CMD python manage.py migrate --noinput && \
-    gunicorn config.wsgi --bind 0.0.0.0:${PORT:-8000} --workers 3
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
