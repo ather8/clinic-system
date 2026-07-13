@@ -3,7 +3,6 @@ FROM node:20-slim AS build
 WORKDIR /app
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-RUN echo "DEBUG VITE_API_BASE_URL is: [$VITE_API_BASE_URL]"
 COPY package*.json ./
 RUN npm install
 COPY . .
@@ -11,6 +10,7 @@ RUN npm run build
 
 # Stage 2: serve
 FROM nginx:alpine
+ARG CACHEBUST=1
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
